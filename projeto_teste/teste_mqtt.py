@@ -5,6 +5,8 @@ import time
 def on_message(client, userdata, message):
     print("message received", str(message.payload.decode("utf-8")), \
           "topico", message.topic, "retained ", message.retain)
+    print message.topic.split('/')[0]
+    print message.topic.split('/')[1]
 ########################################
 
 broker_address="iotsmartlock.mooo.com"
