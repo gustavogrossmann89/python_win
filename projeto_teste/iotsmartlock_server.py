@@ -3,8 +3,8 @@ import time
 import requests
 import json
 firebase_url = "https://iotsmartlockgg.firebaseio.com/"
-#broker_address = "iotsmartlock.mooo.com"
-broker_address = "pksr.eletrica.eng.br"
+broker_address = "iotsmartlock.mooo.com"
+#broker_address = "pksr.eletrica.eng.br"
 
 ########################################
 def on_message(client, userdata, message):
@@ -20,9 +20,14 @@ def on_message(client, userdata, message):
         print message.topic.split('/')[0]
         print message.topic.split('/')[1]
 
-        data = {'date': date_mmddyyyy, 'time': time_hhmmss, 'node': node, 'topic': topic, 'msg': msg}
-        result = requests.post(firebase_url + '/logs.json', data=json.dumps(data))
-        print 'Record inserted. Result Code = ' + str(result.status_code) + ',' + result.text
+        if topic == "leave" or topic == "alert":
+            notificationData = {'date': date_mmddyyyy, 'time': time_hhmmss, 'node': node, 'type': topic, 'read': '0'}
+            notificationResult = requests.post(firebase_url + '/notifications.json', data=json.dumps(notificationData))
+            print 'Notification inserted. Result Code = ' + str(notificationResult.status_code) + ',' + notificationResult.text
+
+        logData = {'date': date_mmddyyyy, 'time': time_hhmmss, 'node': node, 'topic': topic, 'msg': msg}
+        logResult = requests.post(firebase_url + '/logs.json', data=json.dumps(logData))
+        print 'Log inserted. Result Code = ' + str(logResult.status_code) + ',' + logResult.text
     except IOError:
         print('Error! Something went wrong.')
 ########################################
